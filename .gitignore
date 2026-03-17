@@ -4,3 +4,6 @@
 
 # direnv
 /.direnv
+
+# rom files
+*.ch8

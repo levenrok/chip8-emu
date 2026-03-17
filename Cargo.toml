@@ -6,3 +6,6 @@ license = "MIT"
 repository = "https://github.com/levenrok/chip8-emu.git"
 authors = ["levenrok"]
 edition = "2024"
+
+[dependencies]
+anyhow = "1.0.102"
