@@ -25,6 +25,17 @@ name = "chip8-emu"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "js-sys",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "js-sys"
+version = "0.3.91"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b49715b7073f385ba4bc528e5747d02e66cb39c6146efb66b781f131f0fb399c"
+dependencies = [
+ "once_cell",
  "wasm-bindgen",
 ]
 

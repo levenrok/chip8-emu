@@ -15,9 +15,19 @@ fn main() -> Result<()> {
 
     let filename = &args[1];
 
-    let _rom_data: Vec<u8> = fs::read(filename)?;
+    let filedata: Vec<u8> = fs::read(filename)?;
 
     println!("loading ROM: \x1b[1m{}\x1b[0m", filename);
+
+    let rom = {
+        let name = filename.clone();
+        let data = filedata;
+        let size = data.len();
+
+        Rom::new(name, data, size)
+    };
+
+    println!("name: {}, size: {}", rom.name(), rom.size);
 
     Ok(())
 }
