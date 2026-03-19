@@ -9,7 +9,9 @@ use sdl2::pixels::Color;
 use sdl2::pixels::PixelFormatEnum;
 use sdl2::rect::Rect;
 
+mod core;
 mod rom;
+use core::Core;
 use rom::Rom;
 
 macro_rules! init_or_bail {
@@ -43,6 +45,8 @@ fn main() -> Result<()> {
     };
 
     println!("name: {}, size: {}", rom.name(), rom.size);
+
+    let mut _emulator = Core::init(&rom);
 
     let sdl = init_or_bail!(sdl2::init());
     let video = init_or_bail!(sdl.video());
