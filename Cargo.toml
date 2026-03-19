@@ -14,3 +14,6 @@ crate-type = ["cdylib", "rlib"]
 anyhow = "1.0.102"
 js-sys = "0.3.91"
 wasm-bindgen = "0.2.114"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+sdl2 = "0.38.0"

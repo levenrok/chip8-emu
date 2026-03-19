@@ -32,9 +32,9 @@
             clippy
           ];
 
-          # buildInputs = with pkgs; [
-          #   SDL2
-          # ];
+          buildInputs = with pkgs; [
+            SDL2
+          ];
 
           env.RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
 
