@@ -46,7 +46,7 @@ fn main() -> Result<()> {
 
     println!("name: {}, size: {}", rom.name(), rom.size);
 
-    let mut _emulator = Core::init(&rom);
+    let mut emulator = Core::init(&rom);
 
     let sdl = init_or_bail!(sdl2::init());
     let video = init_or_bail!(sdl.video());
@@ -73,6 +73,8 @@ fn main() -> Result<()> {
                 _ => {}
             }
         }
+
+        emulator.cycle();
 
         canvas.set_draw_color(Color::RGB(0, 0, 0));
         canvas.clear();

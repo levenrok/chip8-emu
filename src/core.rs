@@ -76,6 +76,74 @@ impl Core {
             sound_timer: 0,
         }
     }
+
+    #[wasm_bindgen]
+    pub fn cycle(&mut self) {
+
+        self.opcode = (self.memory[self.pc as usize] as u16) << 8
+            | self.memory[(self.pc + 1) as usize] as u16;
+        println!("instruction: {:X}", self.opcode);
+
+        let instruction = (self.opcode & 0xF000) >> 12;
+        println!("opcode: {:X}", instruction);
+
+        let nnn = self.opcode & 0x0FFF;
+        let x = (self.opcode & 0x0F00) >> 8;
+        let y = (self.opcode & 0x00F0) >> 4;
+        let kk = self.opcode & 0x00FF;
+
+        match instruction {
+            0x0 => {
+                if self.opcode == 0x00E0 {
+                    for g in self.graphics.iter_mut() {
+                        *g = 0;
+                    }
+                } else if self.opcode == 0x00EE {
+                    self.pc = self.stack[self.pc as usize];
+                    self.sp -= 1;
+                }
+
+                self.increment();
+            }
+            0x1 => self.pc = nnn,
+            0x2 => {
+                self.sp += 1;
+                self.stack[self.sp as usize] = self.pc;
+                self.pc = nnn;
+            }
+            0x3 => {
+                if self.v[x as usize] == kk as u8 {
+                    self.increment();
+                }
+                self.increment();
+            }
+            0x4 => {
+                if self.v[x as usize] != kk as u8 {
+                    self.increment();
+                }
+                self.increment();
+            }
+            0x5 => {
+                if self.v[x as usize] == self.v[y as usize] {
+                    self.increment();
+                }
+                self.increment();
+            }
+            0x6 => {
+                self.v[x as usize] = kk as u8;
+                self.increment();
+            }
+            0x7 => {
+                self.v[x as usize] = self.v[x as usize].wrapping_add(kk as u8);
+                self.increment();
+            }
+            _ => unreachable!("unknown opcode: {:04X}", self.opcode),
+        }
+    }
+
+    fn increment(&mut self) {
+        self.pc += 2;
+    }
 }
 
 #[cfg(not(target_arch = "wasm32"))]
