@@ -1,9 +1,11 @@
-# build artifacts
+# Build artifacts
 /target
 /pkg
 
-# direnv
+/node_modules
+
+# Direnv
 /.direnv
 
-# rom files
+# Rom files
 *.ch8

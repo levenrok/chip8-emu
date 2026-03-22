@@ -30,6 +30,11 @@
             rust-analyzer
             rustfmt
             clippy
+
+            nodejs_24
+            typescript-language-server
+            svelte-language-server
+            tailwindcss-language-server
           ];
 
           buildInputs = with pkgs; [
