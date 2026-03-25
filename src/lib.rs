@@ -1,2 +1,2 @@
-mod core;
-mod rom;
+pub mod core;
+pub mod rom;

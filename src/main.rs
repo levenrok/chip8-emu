@@ -2,6 +2,8 @@ extern crate sdl2;
 
 use std::env;
 use std::fs;
+use std::thread;
+use std::time::Duration;
 
 use anyhow::{Result, bail};
 use sdl2::event::Event;
@@ -9,10 +11,8 @@ use sdl2::pixels::Color;
 use sdl2::pixels::PixelFormatEnum;
 use sdl2::rect::Rect;
 
-mod core;
-mod rom;
-use core::Core;
-use rom::Rom;
+use chip8_emu::core::Core;
+use chip8_emu::rom::Rom;
 
 macro_rules! init_or_bail {
     ($init: expr) => {
@@ -84,7 +84,7 @@ fn main() -> Result<()> {
 
         canvas.present();
 
-        std::thread::sleep(std::time::Duration::from_nanos(12 * 1_000_000));
+        thread::sleep(Duration::from_nanos(12 * 1_000_000));
     }
 
     Ok(())
