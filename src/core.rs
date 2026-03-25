@@ -1,3 +1,4 @@
+use rand::RngExt;
 use wasm_bindgen::prelude::*;
 
 use crate::rom::Rom;
@@ -79,6 +80,7 @@ impl Core {
 
     #[wasm_bindgen]
     pub fn cycle(&mut self) {
+        let rand_byte = rand::rng().random_range(0..=255);
 
         self.opcode = (self.memory[self.pc as usize] as u16) << 8
             | self.memory[(self.pc + 1) as usize] as u16;
@@ -135,6 +137,17 @@ impl Core {
             }
             0x7 => {
                 self.v[x as usize] = self.v[x as usize].wrapping_add(kk as u8);
+                self.increment();
+            }
+            0xA => {
+                self.i = nnn;
+                self.increment();
+            }
+            0xB => {
+                self.pc = nnn + self.v[0] as u16;
+            }
+            0xC => {
+                self.v[x as usize] = rand_byte & kk as u8;
                 self.increment();
             }
             _ => unreachable!("unknown opcode: {:04X}", self.opcode),
