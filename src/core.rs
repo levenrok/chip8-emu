@@ -43,24 +43,21 @@ impl Core {
     pub fn init(rom: &Rom) -> Self {
         let mut memory = [0u8; 4096];
 
+        let data = rom.data();
+        let data_start = 0x0200;
+
         memory[..FONT_SET.len()].copy_from_slice(&FONT_SET);
 
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let data = rom.data();
-            let len = data.len();
-
-            for i in 0..len {
-                memory[i + 0x0200] = data[i];
-            }
+            let data_len = data.len();
+            memory[data_start..(data_start + data_len)].copy_from_slice(&data[..data_len]);
         }
 
         #[cfg(target_arch = "wasm32")]
         {
-            let data = rom.data();
-            let len = data.length() as usize;
-
-            data.copy_to(&mut memory[0x0200..0x0200 + len]);
+            let data_len = data.length() as usize;
+            data.copy_to(&mut memory[data_start..(data_start + data_len)]);
         }
 
         Self {
