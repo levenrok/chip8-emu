@@ -98,7 +98,7 @@ impl Core {
                         *g = 0;
                     }
                 } else if self.opcode == 0x00EE {
-                    self.pc = self.stack[self.pc as usize];
+                    self.pc = self.stack[self.sp as usize];
                     self.sp -= 1;
                 }
 
