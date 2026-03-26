@@ -2,20 +2,40 @@
 name = "chip8-emu"
 description = "A simple Chip-8 emulator built with Rust"
 version = "0.1.0"
+resolver = "2"
 license = "MIT"
 repository = "https://github.com/levenrok/chip8-emu.git"
-authors = ["levenrok"]
+authors = ["levenrok <levenrok@proton.me>"]
 edition = "2024"
+publish = false
+
+[[bin]]
+name = "chip-8"
+path = "src/main.rs"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 anyhow = "1.0.102"
-getrandom = { version = "0.4.2", features = ["wasm_js"] }
-js-sys = "0.3.91"
+getrandom = "0.4.2"
 rand = "0.10.0"
 wasm-bindgen = "0.2.114"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 sdl2 = "0.38.0"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { version = "0.4.2", features = ["wasm_js"] }
+js-sys = "0.3.91"
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = "fat"
+strip = true
+
+[profile.wasm]
+inherits = "release"
+opt-level = "z"
+strip = false

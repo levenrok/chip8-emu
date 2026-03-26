@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -31,10 +32,12 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Install wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+        run: |
+          curl -L https://github.com/rustwasm/wasm-pack/releases/download/v0.14.0/wasm-pack-v0.14.0-x86_64-unknown-linux-musl.tar.gz \
+            | tar -xz --strip-components=1 -C ~/.cargo/bin
 
       - name: Build WASM Package
-        run: wasm-pack build --target web
+        run: wasm-pack build --profile wasm --target web
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -58,6 +61,7 @@ jobs:
           path: ./demo/build
 
   deploy:
+    name: Deploy
     needs: build
     runs-on: ubuntu-latest
     environment:
