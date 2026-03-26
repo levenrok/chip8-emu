@@ -87,6 +87,7 @@ impl Core {
         println!("opcode: {instruction:X}");
 
         let nnn = self.opcode & 0x0FFF;
+        let n = self.opcode & 0x000F;
         let x = (self.opcode & 0x0F00) >> 8;
         let y = (self.opcode & 0x00F0) >> 4;
         let kk = self.opcode & 0x00FF;
@@ -134,6 +135,46 @@ impl Core {
             }
             0x7 => {
                 self.v[x as usize] = self.v[x as usize].wrapping_add(kk as u8);
+                self.increment();
+            }
+            0x8 => {
+                match n {
+                    0x0 => self.v[x as usize] = self.v[y as usize],
+                    0x1 => self.v[x as usize] |= self.v[y as usize],
+                    0x2 => self.v[x as usize] &= self.v[y as usize],
+                    0x3 => self.v[x as usize] ^= self.v[y as usize],
+                    0x4 => {
+                        let (result, overflow) =
+                            self.v[x as usize].overflowing_add(self.v[y as usize]);
+
+                        self.v[0xF] = u8::from(overflow);
+                        self.v[x as usize] = result;
+                    }
+                    0x05 => {
+                        self.v[0xF] = u8::from(self.v[x as usize] > self.v[y as usize]);
+                        self.v[x as usize] = self.v[x as usize].wrapping_sub(self.v[y as usize]);
+                    }
+                    0x06 => {
+                        self.v[0xF] = u8::from((self.v[x as usize] & 0b0000_0001) != 0);
+                        self.v[x as usize] >>= 1;
+                    }
+                    0x7 => {
+                        self.v[0xF] = u8::from(self.v[y as usize] > self.v[x as usize]);
+                        self.v[x as usize] = self.v[y as usize].wrapping_sub(self.v[x as usize]);
+                    }
+                    0xE => {
+                        self.v[0xF] = u8::from((self.v[x as usize] & 0b1000_0000) != 0);
+                        self.v[x as usize] <<= 1;
+                    }
+                    _ => unreachable!("illegal instruction"),
+                }
+
+                self.increment();
+            }
+            0x9 => {
+                if self.v[x as usize] != self.v[y as usize] {
+                    self.increment();
+                }
                 self.increment();
             }
             0xA => {
