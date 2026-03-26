@@ -34,7 +34,7 @@ fn main() -> Result<()> {
 
     let filedata: Vec<u8> = fs::read(filename)?;
 
-    println!("loading ROM: \x1b[1m{}\x1b[0m", filename);
+    println!("loading ROM: \x1b[1m{filename}\x1b[0m");
 
     let rom = {
         let name = filename.clone();

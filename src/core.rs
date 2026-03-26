@@ -79,12 +79,12 @@ impl Core {
     pub fn cycle(&mut self) {
         let rand_byte = rand::rng().random_range(0..=255);
 
-        self.opcode = (self.memory[self.pc as usize] as u16) << 8
-            | self.memory[(self.pc + 1) as usize] as u16;
+        self.opcode = u16::from(self.memory[self.pc as usize]) << 8
+            | u16::from(self.memory[(self.pc + 1) as usize]);
         println!("instruction: {:X}", self.opcode);
 
         let instruction = (self.opcode & 0xF000) >> 12;
-        println!("opcode: {:X}", instruction);
+        println!("opcode: {instruction:X}");
 
         let nnn = self.opcode & 0x0FFF;
         let x = (self.opcode & 0x0F00) >> 8;
@@ -94,9 +94,9 @@ impl Core {
         match instruction {
             0x0 => {
                 if self.opcode == 0x00E0 {
-                    for g in self.graphics.iter_mut() {
+                    self.graphics.iter_mut().for_each(|g| {
                         *g = 0;
-                    }
+                    });
                 } else if self.opcode == 0x00EE {
                     self.pc = self.stack[self.sp as usize];
                     self.sp -= 1;
@@ -141,7 +141,7 @@ impl Core {
                 self.increment();
             }
             0xB => {
-                self.pc = nnn + self.v[0] as u16;
+                self.pc = nnn + u16::from(self.v[0]);
             }
             0xC => {
                 self.v[x as usize] = rand_byte & kk as u8;
