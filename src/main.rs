@@ -11,8 +11,8 @@ use sdl2::pixels::Color;
 use sdl2::pixels::PixelFormatEnum;
 use sdl2::rect::Rect;
 
-use chip8_emu::core::Core;
-use chip8_emu::rom::Rom;
+use chip_8::core::Core;
+use chip_8::rom::Rom;
 
 macro_rules! init_or_bail {
     ($init: expr) => {

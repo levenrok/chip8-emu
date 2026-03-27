@@ -44,7 +44,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "chip8-emu"
+name = "chip-8"
 version = "0.1.0"
 dependencies = [
  "anyhow",

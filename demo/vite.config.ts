@@ -7,6 +7,6 @@ export default defineConfig({
     plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
     server: { fs: { allow: ['..'] } },
     optimizeDeps: {
-        exclude: ['chip8-emu'],
+        exclude: ['chip-8'],
     },
 });

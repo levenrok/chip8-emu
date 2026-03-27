@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import init, { Core, Rom } from 'chip-8';
 
-    import init, { Core, Rom } from 'chip8-emu';
 
     let core: Core | undefined = $state();
     let rom: Rom | undefined = $state();

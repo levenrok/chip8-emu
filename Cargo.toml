@@ -1,17 +1,13 @@
 [package]
-name = "chip8-emu"
-description = "A simple Chip-8 emulator built with Rust"
+name = "chip-8"
+description = "A simple Chip-8 emulator/interpreter built with Rust"
 version = "0.1.0"
 resolver = "2"
 license = "MIT"
-repository = "https://github.com/levenrok/chip8-emu.git"
+repository = "https://github.com/levenrok/chip-8.git"
 authors = ["levenrok <levenrok@proton.me>"]
 edition = "2024"
 publish = false
-
-[[bin]]
-name = "chip-8"
-path = "src/main.rs"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
