@@ -37,7 +37,7 @@ jobs:
             | tar -xz --strip-components=1 -C ~/.cargo/bin
 
       - name: Build WASM Package
-        run: wasm-pack build --profile wasm --target web
+        run: npm run build:wasm
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

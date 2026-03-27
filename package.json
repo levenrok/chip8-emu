@@ -1,32 +1,33 @@
 {
-    "name": "chip-8",
-    "version": "0.1.0",
-    "description": "A simple Chip-8 emulator/interpreter built with Rust",
-    "private": true,
-    "scripts": {
-        "dev": "npm run dev --workspace demo",
-        "build": "npm run build --workspace demo",
-        "preview": "npm run preview --workspace demo",
-        "check": "npm run check --workspace demo",
-        "style": "npm run style --workspace demo",
-        "style:check": "npm run style:check --workspace demo"
-    },
-    "keywords": [
-        "rust",
-        "low-level",
-        "emulator",
-        "interpreter",
-        "chip8",
-        "chip8-emulator",
-        "chip8-interpreter",
-        "wasm",
-        "webassembly"
-    ],
-    "author": "levenrok",
-    "license": "MIT",
-    "type": "module",
-    "workspaces": [
-        "demo",
-        "pkg"
-    ]
+  "name": "chip-8",
+  "version": "0.1.0",
+  "description": "A simple Chip-8 emulator/interpreter built with Rust",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --workspace demo",
+    "build": "npm run build --workspace demo",
+    "build:wasm": "wasm-pack build --profile wasm --target web",
+    "preview": "npm run preview --workspace demo",
+    "check": "npm run check --workspace demo",
+    "style": "npm run style --workspace demo",
+    "style:check": "npm run style:check --workspace demo"
+  },
+  "keywords": [
+    "rust",
+    "low-level",
+    "emulator",
+    "interpreter",
+    "chip8",
+    "chip8-emulator",
+    "chip8-interpreter",
+    "wasm",
+    "webassembly"
+  ],
+  "author": "levenrok",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "demo",
+    "pkg"
+  ]
 }
