@@ -31,7 +31,7 @@ pub struct Core {
     pc: u16,
     stack: [u16; 16],
     sp: u8,
-    key: [u8; 16],
+    keys: [u8; 16],
     graphics: [u8; 64 * 32],
     delay_timer: u8,
     sound_timer: u8,
@@ -68,7 +68,7 @@ impl Core {
             pc: 0x0200,
             stack: [0; 16],
             sp: 0,
-            key: [0; 16],
+            keys: [0; 16],
             graphics: [0; 64 * 32],
             delay_timer: 0,
             sound_timer: 0,
@@ -92,6 +92,9 @@ impl Core {
         let y = (self.opcode & 0x00F0) >> 4;
         let kk = self.opcode & 0x00FF;
 
+        let vx = self.v[x as usize];
+        let vy = self.v[y as usize];
+
         match instruction {
             0x0 => {
                 if self.opcode == 0x00E0 {
@@ -112,19 +115,19 @@ impl Core {
                 self.pc = nnn;
             }
             0x3 => {
-                if self.v[x as usize] == kk as u8 {
+                if vx == kk as u8 {
                     self.increment();
                 }
                 self.increment();
             }
             0x4 => {
-                if self.v[x as usize] != kk as u8 {
+                if vx != kk as u8 {
                     self.increment();
                 }
                 self.increment();
             }
             0x5 => {
-                if self.v[x as usize] == self.v[y as usize] {
+                if vx == vy {
                     self.increment();
                 }
                 self.increment();
@@ -134,36 +137,35 @@ impl Core {
                 self.increment();
             }
             0x7 => {
-                self.v[x as usize] = self.v[x as usize].wrapping_add(kk as u8);
+                self.v[x as usize] = vx.wrapping_add(kk as u8);
                 self.increment();
             }
             0x8 => {
                 match n {
-                    0x0 => self.v[x as usize] = self.v[y as usize],
-                    0x1 => self.v[x as usize] |= self.v[y as usize],
-                    0x2 => self.v[x as usize] &= self.v[y as usize],
-                    0x3 => self.v[x as usize] ^= self.v[y as usize],
+                    0x0 => self.v[x as usize] = vy,
+                    0x1 => self.v[x as usize] |= vy,
+                    0x2 => self.v[x as usize] &= vy,
+                    0x3 => self.v[x as usize] ^= vy,
                     0x4 => {
-                        let (result, overflow) =
-                            self.v[x as usize].overflowing_add(self.v[y as usize]);
+                        let (result, overflow) = vx.overflowing_add(vy);
 
                         self.v[0xF] = u8::from(overflow);
                         self.v[x as usize] = result;
                     }
-                    0x05 => {
-                        self.v[0xF] = u8::from(self.v[x as usize] > self.v[y as usize]);
-                        self.v[x as usize] = self.v[x as usize].wrapping_sub(self.v[y as usize]);
+                    0x5 => {
+                        self.v[0xF] = u8::from(vx > vy);
+                        self.v[x as usize] = vx.wrapping_sub(vy);
                     }
-                    0x06 => {
-                        self.v[0xF] = u8::from((self.v[x as usize] & 0b0000_0001) != 0);
+                    0x6 => {
+                        self.v[0xF] = u8::from((vx & 0b0000_0001) != 0);
                         self.v[x as usize] >>= 1;
                     }
                     0x7 => {
-                        self.v[0xF] = u8::from(self.v[y as usize] > self.v[x as usize]);
-                        self.v[x as usize] = self.v[y as usize].wrapping_sub(self.v[x as usize]);
+                        self.v[0xF] = u8::from(vy > vx);
+                        self.v[x as usize] = vy.wrapping_sub(vx);
                     }
                     0xE => {
-                        self.v[0xF] = u8::from((self.v[x as usize] & 0b1000_0000) != 0);
+                        self.v[0xF] = u8::from((vx & 0b1000_0000) != 0);
                         self.v[x as usize] <<= 1;
                     }
                     _ => unreachable!("illegal instruction"),
@@ -172,7 +174,7 @@ impl Core {
                 self.increment();
             }
             0x9 => {
-                if self.v[x as usize] != self.v[y as usize] {
+                if vx != vy {
                     self.increment();
                 }
                 self.increment();
