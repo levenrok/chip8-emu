@@ -190,6 +190,38 @@ impl Core {
                 self.v[x as usize] = rand_byte & kk as u8;
                 self.increment();
             }
+            0xD => {
+                self.v[0xF] = 0;
+
+                let mut gy = 0;
+                while gy < n {
+                    let pixel = self.memory[(self.i + gy) as usize];
+
+                    let mut gx = 0;
+                    while gx < 8 {
+                        let msb = 0x80;
+
+                        if (pixel & (msb >> gx)) != 0 {
+                            let tx = (vx + gx) % 64;
+                            #[allow(clippy::cast_possible_truncation)]
+                            let ty = (vy + gy as u8) % 32;
+
+                            let i = tx as usize + ty as usize * 64;
+                            self.graphics[i] ^= 1;
+
+                            if self.graphics[i] == 0 {
+                                self.v[0xF] = 1;
+                            }
+                        }
+
+                        gx += 1;
+                    }
+
+                    gy += 1;
+                }
+
+                self.increment();
+            }
             _ => unreachable!("unknown opcode: {:04X}", self.opcode),
         }
     }
