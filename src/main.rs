@@ -8,7 +8,6 @@ use std::time::Instant;
 
 use anyhow::{Result, bail};
 use sdl2::event::Event;
-use sdl2::pixels::Color;
 use sdl2::pixels::PixelFormatEnum;
 use sdl2::rect::Rect;
 
@@ -65,7 +64,7 @@ fn main() -> Result<()> {
     let mut canvas = init_or_bail!(window.into_canvas().build());
     let texture_creator = canvas.texture_creator();
 
-    let texture =
+    let mut texture =
         init_or_bail!(texture_creator.create_texture_streaming(PixelFormatEnum::RGBA8888, 64, 32));
 
     let mut event_pump = init_or_bail!(sdl.event_pump());
@@ -85,7 +84,26 @@ fn main() -> Result<()> {
 
         emulator.cycle();
 
-        canvas.set_draw_color(Color::RGB(0, 0, 0));
+        texture
+            .with_lock(None, |buffer: &mut [u8], pitch: usize| {
+                for y in 0..32_usize {
+                    for x in 0..64_usize {
+                        let offset = x + y * (pitch / 4);
+
+                        let pixel = emulator.graphics()[offset];
+                        let color = if pixel != 0 { 255u8 } else { 0u8 };
+
+                        let offset = offset * 4;
+
+                        buffer[offset] = 255;
+                        buffer[offset + 1] = color;
+                        buffer[offset + 2] = color;
+                        buffer[offset + 3] = color;
+                    }
+                }
+            })
+            .unwrap();
+
         canvas.clear();
 
         let dest = Rect::new(0, 0, 1024, 512);
